@@ -42,8 +42,11 @@ scripts/                     validation and immutable image promotion
 ## Validate
 
 ```bash
-./scripts/validate.sh
+nix develop --command agent-check
 ```
+
+This renders every Kustomize tree into a temporary directory and validates it
+with the Nix-pinned `kubeconform`; no cluster credentials are needed.
 
 The deployment uses the existing cluster conventions: Argo CD, Kustomize,
 NGINX Ingress, cert-manager's `letsencrypt-prod` issuer, and a `dev` cluster
