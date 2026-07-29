@@ -28,6 +28,11 @@ promotion path. Once persistence, object storage, malware quarantine, expiry
 sweeping, and secrets are configured, operators may opt the children into
 automated sync.
 
+Before enabling a child Application, either allow public visibility for the
+organization's GHCR packages or provision a read-only GHCR pull credential
+through the cluster's secret manager. The manifests never embed registry
+credentials.
+
 ## Repository layout
 
 ```text
