@@ -1,0 +1,52 @@
+# ftnl-infra
+
+GitOps app-of-apps for File Tunnel, designed to interoperate with
+[`ORESoftware/k8s-cluster`](https://github.com/ORESoftware/k8s-cluster).
+
+That cluster repository keeps Argo CD application registrations under
+`remote/argocd/apps/` and currently tracks its `dev` branch. This repository
+keeps File Tunnel's own application graph and Kubernetes desired state
+separate, so platform releases do not copy manifests into the cluster repo.
+
+## Bootstrap contract
+
+Copy or Kustomize
+[`interop/k8s-cluster/file-tunnel.application.yaml`](interop/k8s-cluster/file-tunnel.application.yaml)
+into `ORESoftware/k8s-cluster/remote/argocd/apps/`. That single root
+Application points Argo CD at `argocd/apps/` here.
+
+The root creates:
+
+- the restricted `file-tunnel` Argo CD project;
+- `ftnl-foundation` for namespace, quotas, limits, and default-deny policy;
+- `ftnl-backend-api` for the Rust control/data plane;
+- `ftnl-web-server` for the mobile upload portal.
+
+Children are intentionally manual until immutable GHCR image digests replace
+the all-zero bootstrap digests. `scripts/promote-image.sh` is the only supported
+promotion path. Once persistence, object storage, malware quarantine, expiry
+sweeping, and secrets are configured, operators may opt the children into
+automated sync.
+
+## Repository layout
+
+```text
+argocd/apps/                 child Application and AppProject resources
+interop/k8s-cluster/         one-file registration for ORESoftware/k8s-cluster
+kubernetes/foundation/       namespace security and resource boundaries
+kubernetes/backend/          API Deployment, Service, Ingress, NetworkPolicy
+kubernetes/portal/           portal Deployment, Service, Ingress, NetworkPolicy
+scripts/                     validation and immutable image promotion
+```
+
+## Validate
+
+```bash
+./scripts/validate.sh
+```
+
+The deployment uses the existing cluster conventions: Argo CD, Kustomize,
+NGINX Ingress, cert-manager's `letsencrypt-prod` issuer, and a `dev` cluster
+registration. No plaintext Secret is committed.
+
+MIT licensed.

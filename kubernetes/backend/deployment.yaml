@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftnl-backend-api
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ftnl-backend-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ftnl-backend-api
+    spec:
+      serviceAccountName: ftnl-backend-api
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/file-tunnel/ftnl-backend-api
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: FTNL_BIND
+              value: 0.0.0.0:8080
+            - name: FTNL_PORTAL_ORIGIN
+              value: https://upload.file-tunnel.dev
+            - name: RUST_LOG
+              value: ftnl_backend_api=info,tower_http=info
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 100m
+              memory: 96Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+      terminationGracePeriodSeconds: 20

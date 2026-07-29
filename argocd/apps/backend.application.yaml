@@ -1,0 +1,27 @@
+# Manual sync is intentional until the zero digest is promoted and durable
+# storage, quarantine scanning, expiry sweeping, and production secrets exist.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ftnl-backend-api
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: file-tunnel
+  source:
+    repoURL: https://github.com/file-tunnel/ftnl-infra.git
+    targetRevision: main
+    path: kubernetes/backend
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: file-tunnel
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas

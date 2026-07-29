@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: file-tunnel
+  namespace: argocd
+spec:
+  description: File Tunnel application boundary
+  sourceRepos:
+    - https://github.com/file-tunnel/ftnl-infra.git
+  destinations:
+    - namespace: file-tunnel
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  orphanedResources:
+    warn: true
