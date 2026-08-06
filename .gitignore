@@ -3,3 +3,7 @@ rendered/
 *.tmp
 .cache/
 .direnv/
+tmp
+temp
+tmp/worktrees
+temp/worktrees
