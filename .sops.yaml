@@ -15,12 +15,7 @@ creation_rules:
       - age:
           - *op_alex_macbook
 
-  - path_regex: ^env/enc/(staging|dev)\.env\.enc$
-    key_groups:
-      - age:
-          - *op_alex_macbook
-
-  - path_regex: ^env/enc/.*\.env\.enc$
+  - path_regex: ^env/enc/dev\.env\.enc$
     key_groups:
       - age:
           - *op_alex_macbook

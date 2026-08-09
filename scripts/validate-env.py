@@ -27,6 +27,15 @@ ALLOWED_DELIVERY = {
     "pod-env",
 }
 PLACEHOLDERS = {"", "replace-me", "changeme", "todo"}
+REQUIRED_BUNDLE_KEYS = {
+    "prod.env.enc": {
+        "FTNL_ENV",
+        "SUPABASE_PROJECT_REF",
+        "SUPABASE_URL",
+        "SUPABASE_PUBLISHABLE_KEY",
+        "SUPABASE_SECRET_KEY",
+    }
+}
 
 
 def fail(message: str) -> None:
@@ -89,7 +98,7 @@ def main() -> int:
         if row["source"] == "sops":
             sops_names.add(name)
 
-    template_names = parse_dotenv_keys(ROOT / "env/template.env.example")
+    template_names = parse_dotenv_keys(ROOT / ".env.example")
     if template_names != sops_names:
         fail(
             "template and SOPS-owned names differ: "
@@ -103,7 +112,7 @@ def main() -> int:
         path = Path(item)
         if item == ".env" or item.startswith("env/dec/"):
             forbidden.append(item)
-        elif path.suffix == ".env" and item != "env/template.env.example":
+        elif path.suffix == ".env":
             forbidden.append(item)
         elif path.name.startswith(".env") and item not in {".envrc", ".env.example"}:
             forbidden.append(item)
@@ -116,11 +125,13 @@ def main() -> int:
         if "ENC[AES256_GCM" not in content or "sops_age__list_0__map_enc" not in content:
             fail(f"{path.relative_to(ROOT)} is not SOPS age ciphertext")
         encrypted_keys = parse_dotenv_keys(path)
-        if encrypted_keys != sops_names:
+        unexpected = encrypted_keys - sops_names
+        missing = REQUIRED_BUNDLE_KEYS.get(path.name, set()) - encrypted_keys
+        if unexpected or missing:
             fail(
-                f"{path.relative_to(ROOT)} key set differs from ownership: "
-                f"missing={sorted(sops_names - encrypted_keys)} "
-                f"unexpected={sorted(encrypted_keys - sops_names)}"
+                f"{path.relative_to(ROOT)} key set violates the bundle contract: "
+                f"missing_required={sorted(missing)} "
+                f"unexpected={sorted(unexpected)}"
             )
 
     print(
