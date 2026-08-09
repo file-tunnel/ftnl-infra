@@ -11,13 +11,15 @@ rendered/
 !.env.example
 *.env
 **/*.env
+*.env.*
+!.env.example
 env/dec/
 env/dec/**
 env/*.env
 **/.env**
+!.env.example
 !env/enc/
 !env/enc/*.env.enc
-!env/template.env.example
 
 # Local credentials and kube contexts.
 *.pem

@@ -24,7 +24,7 @@ if rg -n 'kind: Secret|image: .+:(latest|main|dev)$|type: LoadBalancer' \
 fi
 
 if rg -n 'rm[[:space:]]+-rf|SUPABASE_(SECRET_KEY|ACCESS_TOKEN|DB_PASSWORD)=.+|CLOUDFLARE_API_TOKEN=.+' \
-  --glob '!env/enc/*.env.enc' --glob '!env/template.env.example' \
+  --glob '!env/enc/*.env.enc' --glob '!.env.example' \
   --glob '!scripts/validate.sh' .; then
   echo "destructive deletion or plaintext provider credentials are forbidden" >&2
   exit 1
