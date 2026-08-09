@@ -1,0 +1,34 @@
+# Inventory and ownership contract. Worker source and wrangler configuration
+# stay beside application code; this repository owns cross-project policy,
+# promotion order, domains, and provider evidence.
+
+[[workers]]
+name = "ftnl-web-server"
+repository = "file-tunnel/ftnl-web-server.rs"
+configuration = "wrangler.toml"
+environments = ["staging", "production"]
+deploy_from = "source-repository"
+
+[[workers]]
+name = "ftnl-mcp-server"
+repository = "file-tunnel/ftnl-mcp-server.rs"
+configuration = "wrangler.toml"
+environments = ["staging", "production"]
+deploy_from = "source-repository"
+
+[[dns]]
+hostname = "api.file-tunnel.dev"
+owner = "ftnl-infra"
+target_kind = "kubernetes-ingress"
+
+[[dns]]
+hostname = "upload.file-tunnel.dev"
+owner = "ftnl-infra"
+target_kind = "kubernetes-ingress"
+
+[policy]
+production_environment = "production"
+require_immutable_artifact = true
+require_protected_environment = true
+require_plan_artifact = true
+forbid_plaintext_credentials = true

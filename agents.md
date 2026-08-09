@@ -13,6 +13,12 @@ These instructions apply to this repository and every directory beneath it.
   are satisfied.
 - Never embed registry credentials, cloud credentials, capabilities, pairing
   secrets, or plaintext Kubernetes Secrets.
+- Keep `env/enc/*.env.enc` as SOPS ciphertext and `env/dec/` ignored. Never put
+  plaintext secret values in patches or command arguments; use `just edit`.
+- Preserve the one-source ownership contract in `env/ownership.toml`. Runtime
+  Fiducia values must use the guarded ExternalSecret key convention.
+- Core generates additive DDL; this repository owns migration review, RLS,
+  explicit grants, and provider apply policy.
 - Do not apply manifests to a live cluster unless the user explicitly requests
   that external change.
 

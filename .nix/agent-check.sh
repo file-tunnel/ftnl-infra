@@ -2,9 +2,18 @@
 set -euo pipefail
 
 ./scripts/validate.sh
+./scripts/gitops-plan.sh
 
 rendered_dir="$(mktemp -d)"
-trap 'rm -rf "$rendered_dir"' EXIT
+cleanup() {
+  rm -f \
+    "$rendered_dir/argocd.yaml" \
+    "$rendered_dir/foundation.yaml" \
+    "$rendered_dir/backend.yaml" \
+    "$rendered_dir/portal.yaml"
+  rmdir "$rendered_dir"
+}
+trap cleanup EXIT
 
 kustomize build argocd/apps >"$rendered_dir/argocd.yaml"
 kustomize build kubernetes/foundation >"$rendered_dir/foundation.yaml"

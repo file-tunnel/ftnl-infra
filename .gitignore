@@ -3,6 +3,31 @@ rendered/
 *.tmp
 .cache/
 .direnv/
+
+# Local environment material. Ciphertext under env/enc is deliberately
+# versioned; decrypted env/dec files and root-level dotenv links never are.
+.env
+.env.*
+!.env.example
+*.env
+**/*.env
+env/dec/
+env/dec/**
+env/*.env
+**/.env**
+!env/enc/
+!env/enc/*.env.enc
+!env/template.env.example
+
+# Local credentials and kube contexts.
+*.pem
+*.p8
+*.p12
+*.jks
+*.keystore
+kubeconfig
+*.kubeconfig
+
 tmp
 temp
 tmp/worktrees

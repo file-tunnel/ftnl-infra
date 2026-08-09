@@ -1,0 +1,40 @@
+name: gitops-supabase-apply
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "env/enc/prod.env.enc"
+      - "supabase/migrations/**"
+      - "supabase/config.toml"
+      - ".github/workflows/gitops-supabase-apply.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gitops-supabase-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31.11.0
+      - name: Validate repository policy
+        run: nix develop --command just gitops-plan
+      - name: Apply reviewed migrations
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          test -f env/enc/prod.env.enc
+          # The variables expand inside the shell launched by sops exec-env.
+          # shellcheck disable=SC2016
+          nix develop --command sops --input-type dotenv exec-env env/enc/prod.env.enc \
+            'supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD" && supabase db push --include-all'

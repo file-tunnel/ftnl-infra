@@ -1,0 +1,26 @@
+# Only SOPS ciphertext under env/enc may be committed. Dotenv variable names
+# remain visible so a review can detect schema changes; values are encrypted.
+#
+# Recipient rotation is a two-step operational change: update this file from a
+# machine that can decrypt every bundle, then run `just rekey`. Removing a
+# recipient also requires provider-side secret rotation.
+
+keys:
+  # Alex's operator key. Add CI as a separate, least-privilege recipient.
+  - &op_alex_macbook age1s8lcnaxn9g77s6j4g7p24w6sgvllpue0lzrsvp3xk02k2gwjj5ssnkp39q
+
+creation_rules:
+  - path_regex: ^env/enc/prod\.env\.enc$
+    key_groups:
+      - age:
+          - *op_alex_macbook
+
+  - path_regex: ^env/enc/(staging|dev)\.env\.enc$
+    key_groups:
+      - age:
+          - *op_alex_macbook
+
+  - path_regex: ^env/enc/.*\.env\.enc$
+    key_groups:
+      - age:
+          - *op_alex_macbook

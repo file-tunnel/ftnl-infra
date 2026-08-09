@@ -1,0 +1,101 @@
+# One source of record per variable. Runtime delivery may differ from the
+# source: production SOPS values are promoted through a reviewed operator job
+# into the cluster store/Fiducia and then materialized as Kubernetes Secrets.
+
+[[variables]]
+name = "FTNL_ENV"
+classification = "non-secret"
+source = "sops"
+runtime_delivery = "local-file"
+consumers = ["operator-tooling"]
+
+[[variables]]
+name = "SUPABASE_PROJECT_REF"
+classification = "sensitive-config"
+source = "sops"
+runtime_delivery = "deployment-workflow"
+consumers = ["supabase-gitops"]
+
+[[variables]]
+name = "SUPABASE_URL"
+classification = "public-config"
+source = "sops"
+runtime_delivery = "fiducia-external-secret"
+consumers = ["ftnl-backend-api", "ftnl-web-server", "supabase-gitops"]
+
+[[variables]]
+name = "SUPABASE_PUBLISHABLE_KEY"
+classification = "public-credential"
+source = "sops"
+runtime_delivery = "fiducia-external-secret"
+consumers = ["ftnl-web-server", "supabase-gitops"]
+
+[[variables]]
+name = "SUPABASE_SECRET_KEY"
+classification = "secret"
+source = "sops"
+runtime_delivery = "fiducia-external-secret"
+consumers = ["ftnl-backend-api", "supabase-gitops"]
+
+[[variables]]
+name = "SUPABASE_ACCESS_TOKEN"
+classification = "secret"
+source = "sops"
+runtime_delivery = "deployment-workflow"
+consumers = ["supabase-gitops"]
+
+[[variables]]
+name = "SUPABASE_DB_PASSWORD"
+classification = "secret"
+source = "sops"
+runtime_delivery = "deployment-workflow"
+consumers = ["supabase-gitops"]
+
+[[variables]]
+name = "CLOUDFLARE_ACCOUNT_ID"
+classification = "sensitive-config"
+source = "sops"
+runtime_delivery = "deployment-workflow"
+consumers = ["cloudflare-gitops"]
+
+[[variables]]
+name = "CLOUDFLARE_API_TOKEN"
+classification = "secret"
+source = "sops"
+runtime_delivery = "deployment-workflow"
+consumers = ["cloudflare-gitops"]
+
+[[variables]]
+name = "DATABASE_URL"
+classification = "secret"
+source = "fiducia-kv"
+runtime_delivery = "fiducia-external-secret"
+consumers = ["ftnl-backend-api"]
+
+[[variables]]
+name = "FTNL_BIND"
+classification = "non-secret"
+source = "kubernetes-manifest"
+runtime_delivery = "pod-env"
+consumers = ["ftnl-backend-api"]
+
+[[variables]]
+name = "FTNL_WEB_BIND"
+classification = "non-secret"
+source = "kubernetes-manifest"
+runtime_delivery = "pod-env"
+consumers = ["ftnl-web-server"]
+
+[[variables]]
+name = "OTEL_EXPORTER_OTLP_ENDPOINT"
+classification = "sensitive-config"
+source = "sops"
+runtime_delivery = "fiducia-external-secret"
+consumers = ["ftnl-backend-api", "ftnl-web-server"]
+
+[[variables]]
+name = "OTEL_EXPORTER_OTLP_HEADERS"
+classification = "secret"
+source = "sops"
+runtime_delivery = "fiducia-external-secret"
+consumers = ["ftnl-backend-api", "ftnl-web-server"]

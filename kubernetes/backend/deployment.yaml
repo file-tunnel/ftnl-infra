@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftnl-backend-api
+  annotations:
+    secret.reloader.stakater.com/reload: ftnl-backend-api-secrets
 spec:
   replicas: 1
   strategy:
@@ -30,6 +32,9 @@ spec:
               value: https://upload.file-tunnel.dev
             - name: RUST_LOG
               value: ftnl_backend_api=info,tower_http=info
+          envFrom:
+            - secretRef:
+                name: ftnl-backend-api-secrets
           ports:
             - name: http
               containerPort: 8080

@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ftnl-web-server
+  annotations:
+    secret.reloader.stakater.com/reload: ftnl-web-server-secrets
 spec:
   replicas: 2
   selector:
@@ -26,6 +28,9 @@ spec:
               value: 0.0.0.0:3000
             - name: FTNL_API_ORIGIN
               value: https://api.file-tunnel.dev
+          envFrom:
+            - secretRef:
+                name: ftnl-web-server-secrets
           ports:
             - name: http
               containerPort: 3000
