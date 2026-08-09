@@ -5,15 +5,21 @@ pkgs.mkShell {
   ]
   ++ (with pkgs; [
     actionlint
+    age
     git
+    just
     jq
     kubeconform
     kubectl
     kustomize
     nixfmt
+    pkgs.ores-sops
+    python3
     ripgrep
     shellcheck
     shfmt
+    sops
+    supabase-cli
     yq-go
   ]);
 

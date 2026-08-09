@@ -42,6 +42,10 @@ kubernetes/foundation/       namespace security and resource boundaries
 kubernetes/backend/          API Deployment, Service, Ingress, NetworkPolicy
 kubernetes/portal/           portal Deployment, Service, Ingress, NetworkPolicy
 scripts/                     validation and immutable image promotion
+cloudflare/                  cross-repository Worker and DNS ownership
+env/                         SOPS schema, ciphertext, and source ownership
+supabase/                    CLI parity and reviewed SQL migrations
+docs/                        secret delivery and provider GitOps boundaries
 ```
 
 ## Validate
@@ -53,8 +57,15 @@ nix develop --command agent-check
 This renders every Kustomize tree into a temporary directory and validates it
 with the Nix-pinned `kubeconform`; no cluster credentials are needed.
 
+It also validates SOPS/plaintext hygiene, one-source environment ownership,
+Supabase RLS migration policy, and credential-free Cloudflare/Supabase plans.
+See [`docs/environment-secrets.md`](docs/environment-secrets.md) and
+[`docs/gitops.md`](docs/gitops.md) before adding credentials or enabling a
+provider apply workflow.
+
 The deployment uses the existing cluster conventions: Argo CD, Kustomize,
-NGINX Ingress, cert-manager's `letsencrypt-prod` issuer, and a `dev` cluster
-registration. No plaintext Secret is committed.
+NGINX Ingress, cert-manager's `letsencrypt-prod` issuer, External Secrets backed
+by Fiducia KV, and a `dev` cluster registration. No plaintext Secret is
+committed.
 
 MIT licensed.
