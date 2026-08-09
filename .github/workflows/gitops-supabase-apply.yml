@@ -29,11 +29,30 @@ jobs:
       - uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31.11.0
       - name: Validate repository policy
         run: nix develop --command just gitops-plan
-      - name: Apply reviewed migrations
+      - name: Check production migration inputs
+        id: production
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
-          test -f env/enc/prod.env.enc
+          if [[ ! -f env/enc/prod.env.enc ]]; then
+            if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+              echo "::error::env/enc/prod.env.enc is required for a manual production apply"
+              exit 1
+            fi
+            echo "::notice::production Supabase apply is not configured; validation completed without provider mutation"
+            echo "enabled=false" >>"$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ -z "$SOPS_AGE_KEY" ]]; then
+            echo "::error::SOPS_AGE_KEY is required once the production ciphertext bundle exists"
+            exit 1
+          fi
+          echo "enabled=true" >>"$GITHUB_OUTPUT"
+      - name: Apply reviewed migrations
+        if: steps.production.outputs.enabled == 'true'
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
           # The variables expand inside the shell launched by sops exec-env.
           # shellcheck disable=SC2016
           nix develop --command sops --input-type dotenv exec-env env/enc/prod.env.enc \
