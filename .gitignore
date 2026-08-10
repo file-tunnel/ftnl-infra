@@ -21,6 +21,10 @@ env/*.env
 !env/enc/
 !env/enc/*.env.enc
 
+# Supabase CLI local linkage/cache material. The project ref belongs in the
+# encrypted production bundle, not in generated working-directory state.
+supabase/.temp/
+
 # Local credentials and kube contexts.
 *.pem
 *.p8

@@ -49,6 +49,12 @@ Before enabling either Argo CD child application, verify:
 - the Stakater reloader controller is available for secret rotations;
 - no pod receives Cloudflare or Supabase management credentials.
 
-The SOPS age private key is not committed. CI should receive a separate
-least-privilege age identity through the protected `production` GitHub
-environment, never reuse an operator private key.
+The SOPS age private keys are not committed. GitHub Actions uses a dedicated
+recipient whose private identity is stored as `SOPS_AGE_KEY` in the protected
+`production` GitHub environment; it never reuses an operator private key.
+
+The production Supabase bundle also carries a dedicated Management API access
+token and database password for reviewed migration applies. The access token
+expires on 2026-09-08. Rotate it before expiry, update the ciphertext with
+`just edit prod`, merge the reviewed ciphertext, and revoke the superseded
+token only after the production workflow succeeds.

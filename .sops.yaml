@@ -6,16 +6,21 @@
 # recipient also requires provider-side secret rotation.
 
 keys:
-  # Alex's operator key. Add CI as a separate, least-privilege recipient.
+  # Alex's operator key for reviewed local rotations.
   - &op_alex_macbook age1s8lcnaxn9g77s6j4g7p24w6sgvllpue0lzrsvp3xk02k2gwjj5ssnkp39q
+  # Dedicated File Tunnel GitHub Actions decryptor. Its private identity is
+  # stored only in the protected production environment as SOPS_AGE_KEY.
+  - &ci_github_actions age1n3a3ajl0yevadht5zxe6jucg6vqdld9lke5es3kvnqktk30wmdyqgshjy5
 
 creation_rules:
   - path_regex: ^env/enc/prod\.env\.enc$
     key_groups:
       - age:
           - *op_alex_macbook
+          - *ci_github_actions
 
   - path_regex: ^env/enc/dev\.env\.enc$
     key_groups:
       - age:
           - *op_alex_macbook
+          - *ci_github_actions
