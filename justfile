@@ -4,14 +4,13 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 set dotenv-load := false
 
-# Exported assignments are evaluated for every Just invocation. Since ignored
-# empty directories do not survive Git, prepare the owner-only plaintext
-# boundary before any recipe — including `just --list` — can run.
+# Export only the owner-local plaintext path during Just parsing. Do not create
+# or chmod env/dec here: parse-time side effects break credential-free plan and
+# audit recipes, while every managed ores-sops lifecycle command owns safe
+# directory creation before it reads or writes plaintext.
 export FTNL_ENV_DEC := ```
   set -eu
   root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-  command -v ores-sops >/dev/null 2>&1 || { echo "ores-sops is required to create env/dec" >&2; exit 1; }
-  ores-sops ensure-dec >/dev/null
   printf '%s' "$root/env/dec"
 ```
 
