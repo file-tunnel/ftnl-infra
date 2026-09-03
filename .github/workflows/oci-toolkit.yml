@@ -47,7 +47,7 @@ jobs:
         run: ruby -e 'require "yaml"; docs = YAML.load_stream(File.read("crossplane/oci-registries.example.yaml")); abort "expected three resources" unless docs.compact.length == 3'
       - name: Check multi-stage image templates
         run: |
-          grep -F 'FROM --platform=$TARGETPLATFORM' docker/Dockerfile.rust-service
-          grep -F 'FROM --platform=$TARGETPLATFORM' docker/Dockerfile.rust-lambda
+          grep -F "FROM --platform=\$TARGETPLATFORM" docker/Dockerfile.rust-service
+          grep -F "FROM --platform=\$TARGETPLATFORM" docker/Dockerfile.rust-lambda
           grep -F 'public.ecr.aws/lambda/provided:al2023' docker/Dockerfile.rust-lambda
           grep -F 'public.ecr.aws/lambda/nodejs:22' docker/Dockerfile.node-lambda
