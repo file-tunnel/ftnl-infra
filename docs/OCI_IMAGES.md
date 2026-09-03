@@ -1,24 +1,34 @@
-# OCI image build, registry and Lambda contract
+# OCI registry and Lambda image contract
 
-Policy source: <https://github.com/ORESoftware/my-ai/blob/main/AGENTS.md>.
+Policy: <https://github.com/ORESoftware/my-ai/blob/main/AGENTS.md>.
 
-Deployable images must live in an actual OCI/Docker Registry API endpoint: AWS ECR for Lambda/ECS/EKS, Google Artifact Registry for Cloud Run/GKE, Azure Container Registry for Container Apps/AKS, or Docker Hub where its plan fits. Cloudflare R2 is deliberately an immutable OCI archive/DR copy, not a direct runtime registry.
+## Authorities
 
-`scripts/oci/build-and-push.sh` uses environment variables so credentials never appear in argv. It supports `aws-ecr`, `dockerhub`, `gcp-artifact-registry`, `azure-acr`, and an already-authenticated custom registry (`none`). Prefer OIDC/workload identity and standard credential helpers.
+This repository consumes two immutable, merged Zed Infra authorities:
+
+- registry provisioning modules: `zed-pkg/zed-infra@698c675f57fd70ebe24a8a08f963599c4c84fa5a`;
+- BuildKit/Lambda publisher: `zed-pkg/zed-infra@e0454f5d0d8c970dfa206595a48eda5ead382544`, Git blob `8490ce53434410192c750b10d17fe122e9df30be`.
+
+The organization-local Terraform adapter keeps ECR, Google Artifact Registry, Azure Container Registry, and Cloudflare R2 independent and disabled by default. Crossplane examples remain unapplied until provider configs, accounts, regions, IAM, retention, cost, and rollback are reviewed.
+
+## Image contract
+
+`scripts/oci/build-and-push.sh` verifies the exact publisher blob before execution. Configuration and credentials are environment/credential-helper inputs; command arguments are rejected.
+
+Portable service images may publish a `linux/amd64,linux/arm64` index. AWS Lambda images must set `IMAGE_KIND=lambda` and exactly one platform (`linux/amd64` or `linux/arm64`). Invalid Lambda indexes fail before authentication or Docker side effects. `PUSH=false` loads one local platform without registry login.
+
+Use `docker/Dockerfile.rust-service`, `docker/Dockerfile.rust-lambda`, or `docker/Dockerfile.node-lambda` for repository roots, `src/lambda`, or sibling `*-lambda` repositories. The Rust Lambda runtime retains only the `bootstrap` executable.
+
+R2 is an OCI archive/disaster-recovery destination after a successful push to ECR, GAR, ACR, Docker Hub, or another Distribution endpoint. It is not a direct pull registry for Lambda, Cloud Run, Kubernetes, Docker, or containerd.
+
+## Validation
 
 ```bash
-REGISTRY_PROVIDER=aws-ecr \
-REGISTRY_HOST=123456789012.dkr.ecr.us-east-1.amazonaws.com \
-AWS_REGION=us-east-1 \
-IMAGE_NAME=example/service \
-IMAGE_TAG="$(git rev-parse --short=12 HEAD)" \
-DOCKERFILE=docker/Dockerfile.rust-service \
-BUILD_ARG_NAMES=SERVICE_BIN SERVICE_BIN=example-service \
-scripts/oci/build-and-push.sh
+bash -n scripts/oci/build-and-push.sh
+OCI_TOOLKIT_VERIFY_ONLY=true scripts/oci/build-and-push.sh
+terraform -chdir=terraform/modules/oci-registries fmt -check
+terraform -chdir=terraform/modules/oci-registries init -backend=false -input=false
+terraform -chdir=terraform/modules/oci-registries validate
 ```
 
-For a Rust Lambda from a `*-lambda` repo or `src/lambda`, use `docker/Dockerfile.rust-lambda` and `BUILD_ARG_NAMES=LAMBDA_BIN`. For Node use `docker/Dockerfile.node-lambda`; it copies `src/lambda` by default. Repository-owned Bun/Deno/single-executable Dockerfiles can use the same publisher.
-
-Default publication is `linux/amd64,linux/arm64`. `PUSH=false` intentionally allows one platform only. Set `R2_ARCHIVE_BUCKET`, `R2_ENDPOINT`, and optional `R2_ARCHIVE_PREFIX` after a real-registry push to export a complete `oci-archive` with `skopeo` and upload it plus SHA-256 sidecar to R2.
-
-`terraform/modules/oci-registries` can create any subset of ECR, GAR, ACR and an R2 archive bucket. Docker Hub account/billing policy remains account-managed. `crossplane/oci-registries.example.yaml` provides direct AWS/GCP/Azure managed-resource examples; keep it unapplied until provider configs, names, projects and regions are reviewed. Provider versions were checked against the official Terraform Registry on 2026-09-02.
+Live image publication and Terraform/Crossplane apply remain protected-environment operations; this repository change performs neither.
