@@ -3,7 +3,10 @@ ARG RUST_VERSION=1.95
 FROM --platform=$TARGETPLATFORM rust:${RUST_VERSION}-bookworm AS build
 ARG LAMBDA_BIN
 WORKDIR /workspace
-RUN apt-get update && apt-get install -y --no-install-recommends musl-tools && rm -rf /var/lib/apt/lists/*
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update \
+ && apt-get install -y --no-install-recommends musl-tools
 COPY Cargo.toml Cargo.lock ./
 COPY . .
 RUN set -eux; test -n "$LAMBDA_BIN"; \
