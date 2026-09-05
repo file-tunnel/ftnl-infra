@@ -2,7 +2,7 @@
 
 For each project, connect the Supabase GitHub App to the repository and branch
 declared in `target.json`. Set **Working directory** to
-`projects/<project-ref>`—not to the nested `supabase/` directory.
+`<project-ref>`—not to the nested `supabase/` directory.
 
 ## Safe activation sequence
 

@@ -93,7 +93,7 @@ if (catalog) {
     if (refs.has(entry.ref)) fail(`catalog.json: duplicate project ref ${entry.ref}`);
     refs.add(entry.ref);
 
-    const expectedTarget = `projects/${entry.ref}/target.json`;
+    const expectedTarget = `${entry.ref}/target.json`;
     if (entry.target !== expectedTarget) fail(`${entry.ref}: target must be ${expectedTarget}`);
     const targetPath = assertContained(entry.target, `${entry.ref}.target`);
     if (!targetPath || !(await exists(targetPath))) {
@@ -121,7 +121,7 @@ if (catalog) {
     if (target.project?.canonical) canonicalCount += 1;
 
     const provider = target.providerOverlay ?? {};
-    const expectedWorkingDirectory = `projects/${entry.ref}`;
+    const expectedWorkingDirectory = `${entry.ref}`;
     if (provider.repository !== catalog.github.repository) fail(`${entry.target}: provider repository differs from catalog`);
     if (provider.repository?.split('/')[0] !== catalog.github.organization) fail(`${entry.target}: provider repository must stay in the mapped GitHub organization`);
     if (provider.branch !== catalog.github.defaultBranch) fail(`${entry.target}: provider branch differs from catalog`);

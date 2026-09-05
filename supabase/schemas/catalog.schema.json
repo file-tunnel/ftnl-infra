@@ -47,7 +47,7 @@
         "required": ["ref", "target"],
         "properties": {
           "ref": { "type": "string", "pattern": "^[a-z]{20}$" },
-          "target": { "type": "string", "pattern": "^projects/[a-z]{20}/target\\.json$" }
+          "target": { "type": "string", "pattern": "^[a-z]{20}/target\\.json$" }
         }
       }
     }

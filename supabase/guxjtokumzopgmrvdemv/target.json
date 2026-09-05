@@ -1,5 +1,5 @@
 {
-  "$schema": "../../schemas/project-target.schema.json",
+  "$schema": "../schemas/project-target.schema.json",
   "version": 1,
   "githubOrganization": "file-tunnel",
   "supabaseOrganization": {
@@ -24,13 +24,13 @@
     "jsonSchemaDirectory": "schema"
   },
   "providerOverlay": {
-    "repository": "file-tunnel/ftnl-supabase",
+    "repository": "file-tunnel/ftnl-infra",
     "branch": "main",
-    "workingDirectory": "projects/guxjtokumzopgmrvdemv",
-    "supabaseDirectory": "projects/guxjtokumzopgmrvdemv/supabase",
-    "migrationsDirectory": "projects/guxjtokumzopgmrvdemv/supabase/migrations",
-    "functionsDirectory": "projects/guxjtokumzopgmrvdemv/supabase/functions",
-    "configPath": "projects/guxjtokumzopgmrvdemv/supabase/config.toml"
+    "workingDirectory": "guxjtokumzopgmrvdemv",
+    "supabaseDirectory": "guxjtokumzopgmrvdemv/supabase",
+    "migrationsDirectory": "guxjtokumzopgmrvdemv/supabase/migrations",
+    "functionsDirectory": "guxjtokumzopgmrvdemv/supabase/functions",
+    "configPath": "guxjtokumzopgmrvdemv/supabase/config.toml"
   },
   "gitIntegration": {
     "provider": "supabase-github-app",

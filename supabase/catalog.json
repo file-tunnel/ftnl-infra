@@ -3,7 +3,7 @@
   "version": 1,
   "github": {
     "organization": "file-tunnel",
-    "repository": "file-tunnel/ftnl-supabase",
+    "repository": "file-tunnel/ftnl-infra",
     "defaultBranch": "main"
   },
   "supabaseOrganization": {
@@ -14,7 +14,7 @@
   "projects": [
     {
       "ref": "guxjtokumzopgmrvdemv",
-      "target": "projects/guxjtokumzopgmrvdemv/target.json"
+      "target": "guxjtokumzopgmrvdemv/target.json"
     }
   ]
 }
