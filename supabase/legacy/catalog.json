@@ -1,0 +1,21 @@
+{
+  "$schema": "./schemas/catalog.schema.json",
+  "version": 1,
+  "github": {
+    "organization": "file-tunnel",
+    "repository": "file-tunnel/ftnl-supabase",
+    "defaultBranch": "main"
+  },
+  "supabaseOrganization": {
+    "id": "pcfljjkfhywmvccntzsy",
+    "name": "file-tunnel"
+  },
+  "canonicalProjectRef": "guxjtokumzopgmrvdemv",
+  "projects": [
+    {
+      "ref": "guxjtokumzopgmrvdemv",
+      "target": "projects/guxjtokumzopgmrvdemv/target.json"
+    }
+  ]
+}
+
