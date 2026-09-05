@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "githubOrg": "file-tunnel",
+  "expectedState": "paused",
+  "mapping": {
+    "neonOrg": "org-young-frost-61069051",
+    "supabaseOrg": "pcfljjkfhywmvccntzsy",
+    "cloudflareDomain": null,
+    "slackChannel": "C0BMT1K9MBM",
+    "gcpProject": "ores-file-tunnel",
+    "linearProject": "0cb3346d-19e0-4aff-8758-c5d5a4a1ed80"
+  },
+  "areas": [
+    {
+      "role": "canonical",
+      "vpcId": null,
+      "region": null,
+      "sourceSecurityGroup": null,
+      "workloadIdentity": null,
+      "credentialRef": null
+    },
+    {
+      "role": "auth",
+      "vpcId": null,
+      "region": null,
+      "sourceSecurityGroup": null,
+      "workloadIdentity": null,
+      "credentialRef": null
+    },
+    {
+      "role": "admin",
+      "vpcId": null,
+      "region": null,
+      "sourceSecurityGroup": null,
+      "workloadIdentity": null,
+      "credentialRef": null
+    }
+  ],
+  "projects": [
+    {
+      "provider": "neon",
+      "role": "canonical",
+      "projectId": "crimson-mode-42192693",
+      "region": "us-east-1",
+      "endpointIds": null
+    },
+    {
+      "provider": "neon",
+      "role": "auth",
+      "projectId": "shiny-queen-96504840",
+      "region": "us-east-1",
+      "endpointIds": null
+    },
+    {
+      "provider": "neon",
+      "role": "admin",
+      "projectId": "green-frost-66059971",
+      "region": "us-east-1",
+      "endpointIds": null
+    },
+    {
+      "provider": "supabase",
+      "role": "canonical",
+      "projectId": "wmamihhddbyczclioxcn",
+      "region": "us-east-2",
+      "endpointIds": null
+    },
+    {
+      "provider": "supabase",
+      "role": "auth",
+      "projectId": "masowgpiieyneaulhufe",
+      "region": "us-east-2",
+      "endpointIds": null
+    },
+    {
+      "provider": "supabase",
+      "role": "admin",
+      "projectId": null,
+      "region": null,
+      "endpointIds": null
+    }
+  ]
+}
