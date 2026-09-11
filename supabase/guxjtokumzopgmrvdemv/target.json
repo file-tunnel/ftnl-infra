@@ -1,0 +1,63 @@
+{
+  "$schema": "../schemas/project-target.schema.json",
+  "version": 1,
+  "githubOrganization": "file-tunnel",
+  "supabaseOrganization": {
+    "id": "pcfljjkfhywmvccntzsy",
+    "name": "file-tunnel"
+  },
+  "project": {
+    "ref": "guxjtokumzopgmrvdemv",
+    "slug": "file-tunnel-main",
+    "status": "paused",
+    "region": "ca-central-1",
+    "environment": "production",
+    "canonical": true
+  },
+  "contractSource": {
+    "repository": "file-tunnel/ftnl-lib-core",
+    "branch": "main",
+    "authorityTier": "lib-core",
+    "state": "partial",
+    "rootDirectory": ".",
+    "sqlDesiredState": null,
+    "jsonSchemaDirectory": "schema"
+  },
+  "providerOverlay": {
+    "repository": "file-tunnel/ftnl-infra",
+    "branch": "main",
+    "workingDirectory": "guxjtokumzopgmrvdemv",
+    "supabaseDirectory": "guxjtokumzopgmrvdemv/supabase",
+    "migrationsDirectory": "guxjtokumzopgmrvdemv/supabase/migrations",
+    "functionsDirectory": "guxjtokumzopgmrvdemv/supabase/functions",
+    "configPath": "guxjtokumzopgmrvdemv/supabase/config.toml"
+  },
+  "gitIntegration": {
+    "provider": "supabase-github-app",
+    "state": "planned",
+    "automaticBranching": true,
+    "supabaseChangesOnly": true,
+    "deployToProduction": false,
+    "verifiedAt": null
+  },
+  "baseline": {
+    "state": "pending",
+    "method": "supabase-db-pull",
+    "migrationHead": null,
+    "sourceCommit": null,
+    "verifiedAt": null
+  },
+  "databaseAlignment": {
+    "relationship": "controlled-drift",
+    "peer": "aws-rds-postgres",
+    "convergence": "explicit-only",
+    "migrationEngine": "declarative-migrations/declarative-postgres-migrate.rs",
+    "registry": "ORESoftware/k8s-libs-and-shared-defs"
+  },
+  "dependencies": {
+    "apiContracts": "ORESoftware/api-docs",
+    "authenticationOrganization": "shared-auth",
+    "syncOrganization": "opto-sync"
+  }
+}
+
