@@ -1,0 +1,13 @@
+schema_version = 1
+modules_root = "modules"
+
+[providers.supabase]
+canonical_path = "modules/supabase"
+sync_mode = "native_git"
+working_directory = "modules/supabase/projects/guxjtokumzopgmrvdemv"
+project_catalog = "modules/supabase/catalog.json"
+
+[policy]
+provider_native_paths_must_match = true
+path_filtered_ci = true
+secrets = "sops-age"

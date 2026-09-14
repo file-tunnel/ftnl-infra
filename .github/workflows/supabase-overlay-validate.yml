@@ -1,0 +1,23 @@
+name: supabase-overlay-validate
+on:
+  pull_request:
+    paths: ['modules/supabase/**', '.ores-infra.toml', '.github/workflows/supabase-overlay-validate.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Validate canonical Supabase authority
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs'),path=require('node:path');const root='modules/supabase',c=JSON.parse(fs.readFileSync(path.join(root,'catalog.json'),'utf8'));
+          if(c.github.repository!=='file-tunnel/ftnl-infra')throw new Error('catalog repository drift');
+          for(const p of c.projects){const t=JSON.parse(fs.readFileSync(path.join(root,p.target),'utf8'));if(t.providerOverlay.repository!==c.github.repository)throw new Error('overlay repository drift');if(!t.providerOverlay.workingDirectory.startsWith('modules/supabase/projects/'))throw new Error('working directory escaped module');if(!fs.existsSync(t.providerOverlay.configPath))throw new Error('missing config');}
+          NODE
+          if find modules/supabase -type f \( -name '.env' -o -name '*.tfstate' -o -name '*.tfstate.backup' \) -print -quit | grep -q .; then exit 1; fi
