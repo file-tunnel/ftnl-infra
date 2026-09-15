@@ -10,7 +10,13 @@ jobs:
       - uses: actions/checkout@v4
       - if: github.event.action != 'closed'
         uses: neondatabase/create-branch-action@v5
-        with: { project_id: ${{ vars.NEON_PROJECT_ID }}, branch_name: preview/pr-${{ github.event.number }}-${{ github.head_ref }}, api_key: ${{ secrets.NEON_API_KEY }} }
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_name: preview/pr-${{ github.event.number }}-${{ github.head_ref }}
+          api_key: ${{ secrets.NEON_API_KEY }}
       - if: github.event.action == 'closed'
         uses: neondatabase/delete-branch-action@v3
-        with: { project_id: ${{ vars.NEON_PROJECT_ID }}, branch: preview/pr-${{ github.event.number }}-${{ github.head_ref }}, api_key: ${{ secrets.NEON_API_KEY }} }
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch: preview/pr-${{ github.event.number }}-${{ github.head_ref }}
+          api_key: ${{ secrets.NEON_API_KEY }}
