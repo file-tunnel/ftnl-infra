@@ -39,5 +39,5 @@ if [[ "$mode" == "--dry-run" ]]; then
   echo "Would promote $component to $digest in $file"
   exit 0
 fi
-perl -0pi -e "s#(^[[:space:]]*digest: )sha256:[a-f0-9]{64}\\$#\\$1$digest#m" "$file"
+FTNL_PROMOTION_DIGEST="$digest" perl -0pi -e 's#(^[[:space:]]*digest: )sha256:[a-f0-9]{64}$#$1$ENV{FTNL_PROMOTION_DIGEST}#m' "$file"
 echo "Promoted $component to $digest in $file"
