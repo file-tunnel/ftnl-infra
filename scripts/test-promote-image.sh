@@ -5,8 +5,8 @@ root="$(cd -- "$script_dir/.." && pwd)"
 tmp="$(mktemp -d)"
 cleanup() {
   rm -f "$tmp/kubernetes/backend/kustomization.yaml" \
-        "$tmp/kubernetes/backend/kustomization.yaml.bak" \
-        "$tmp/kubernetes/portal/kustomization.yaml"
+    "$tmp/kubernetes/backend/kustomization.yaml.bak" \
+    "$tmp/kubernetes/portal/kustomization.yaml"
   rmdir "$tmp/kubernetes/backend" "$tmp/kubernetes/portal" "$tmp/kubernetes" "$tmp"
 }
 trap cleanup EXIT
