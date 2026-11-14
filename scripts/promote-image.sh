@@ -4,7 +4,7 @@ set -euo pipefail
 component="${1:-}"
 digest="${2:-}"
 mode="${3:-}"
-if (( $# < 2 || $# > 3 )) || [[ -n "$mode" && "$mode" != "--dry-run" ]]; then
+if (($# < 2 || $# > 3)) || [[ -n "$mode" && "$mode" != "--dry-run" ]]; then
   echo "usage: $0 backend|portal sha256:<64 lowercase hex> [--dry-run]" >&2
   exit 2
 fi
@@ -19,7 +19,7 @@ case "$component" in
 esac
 
 if [[ ! "$digest" =~ ^sha256:[a-f0-9]{64}$ ]] ||
-   [[ "$digest" == "sha256:$(printf '%064d' 0)" ]]; then
+  [[ "$digest" == "sha256:$(printf '%064d' 0)" ]]; then
   echo "digest must be a non-zero lowercase sha256 OCI digest" >&2
   exit 2
 fi
